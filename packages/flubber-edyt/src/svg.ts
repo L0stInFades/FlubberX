@@ -1,14 +1,54 @@
-import SvgPath from "svgpath";
+import * as SvgPathModule from "svgpath";
 import { svgPathProperties } from "svg-path-properties";
 import { INVALID_INPUT } from "./errors";
 import { isFiniteNumber } from "./geometry";
 import type { Point, Ring } from "./types";
 
-export function toPathString(ring: Ring): string {
-  return `M${ring.map((p) => `${p[0]},${p[1]}`).join("L")}Z`;
+const svgPathFactory =
+  (SvgPathModule as unknown as { default?: (path: string) => any }).default ??
+  (SvgPathModule as unknown as (path: string) => any);
+
+const POW10 = [
+  1,
+  10,
+  100,
+  1000,
+  10000,
+  100000,
+  1000000,
+  10000000,
+  100000000,
+  1000000000,
+  10000000000,
+  100000000000,
+  1000000000000,
+];
+
+export function toPathString(ring: Ring, precision?: number | null): string {
+  if (!ring || !ring.length) return "";
+
+  if (precision !== undefined && precision !== null && isFiniteNumber(precision)) {
+    let out = "M";
+    for (let i = 0; i < ring.length; i++) {
+      const p = ring[i]!;
+      out += `${formatNumber(p[0], precision)},${formatNumber(p[1], precision)}`;
+      if (i < ring.length - 1) out += "L";
+    }
+    out += "Z";
+    return out;
+  }
+
+  return "M" + ring.join("L") + "Z";
 }
 
-export function pathStringToRing(path: string, maxSegmentLength: number): {
+export function splitPathString(str: string): string[] {
+  return split(parse(str));
+}
+
+export function pathStringToRing(
+  path: string,
+  maxSegmentLength?: number | false,
+): {
   ring: Ring;
   skipBisect: boolean;
 } {
@@ -17,7 +57,7 @@ export function pathStringToRing(path: string, maxSegmentLength: number): {
 }
 
 function parse(str: string): any {
-  return (SvgPath as any)(str).abs();
+  return svgPathFactory(str).abs();
 }
 
 function split(parsed: any): string[] {
@@ -63,7 +103,7 @@ function exactRing(parsed: any): { ring: Ring; skipBisect: boolean } | null {
   return ring.length > 0 ? { ring, skipBisect: false } : null;
 }
 
-function approximateRing(parsed: any, maxSegmentLength: number): {
+function approximateRing(parsed: any, maxSegmentLength?: number | false): {
   ring: Ring;
   skipBisect: boolean;
 } {
@@ -83,7 +123,7 @@ function approximateRing(parsed: any, maxSegmentLength: number): {
   const ring: Ring = [];
   for (let i = 0; i < numPoints; i++) {
     const p = measured.getPointAtLength((length * i) / numPoints);
-    ring.push([p.x, p.y]);
+    ring.push([p[0], p[1]]);
   }
 
   return { ring, skipBisect: true };
@@ -117,4 +157,13 @@ function measurePath(path: string): {
       return [p.x, p.y];
     },
   };
+}
+
+function formatNumber(value: number, precision: number | null): string {
+  if (precision === null) return String(value);
+
+  const p = Math.max(0, Math.min(12, precision));
+  const factor = POW10[p] ?? 10 ** p;
+  const rounded = Math.round(value * factor) / factor;
+  return String(rounded);
 }

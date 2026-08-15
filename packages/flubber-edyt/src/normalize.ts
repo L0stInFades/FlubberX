@@ -4,7 +4,10 @@ import { isFiniteNumber, polygonArea, samePoint } from "./geometry";
 import { pathStringToRing } from "./svg";
 import type { Ring, ShapeInput } from "./types";
 
-export function normalizeRing(shape: ShapeInput, maxSegmentLength: number): Ring {
+export function normalizeRing(
+  shape: ShapeInput,
+  maxSegmentLength: number | false,
+): Ring {
   let ring: Ring;
   let skipBisect = false;
 

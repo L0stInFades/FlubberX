@@ -28,6 +28,33 @@ export function polygonArea(ring: Ring): number {
   return area / 2;
 }
 
+export function polygonCentroid(ring: Ring): Point {
+  if (!ring.length) return [0, 0];
+
+  let x = 0;
+  let y = 0;
+  let twiceArea = 0;
+
+  for (let i = 0; i < ring.length; i++) {
+    const a = ring[i]!;
+    const b = ring[(i + 1) % ring.length]!;
+    const cross = a[0] * b[1] - b[0] * a[1];
+    twiceArea += cross;
+    x += (a[0] + b[0]) * cross;
+    y += (a[1] + b[1]) * cross;
+  }
+
+  if (Math.abs(twiceArea) < 1e-12) {
+    return [
+      (ring[0]![0] + ring[ring.length - 1]![0]) / 2,
+      (ring[0]![1] + ring[ring.length - 1]![1]) / 2,
+    ];
+  }
+
+  const area6 = twiceArea * 3;
+  return [x / area6, y / area6];
+}
+
 export function polygonPerimeter(ring: Ring): number {
   let perimeter = 0;
   for (let i = 0; i < ring.length; i++) {

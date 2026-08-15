@@ -1,8 +1,10 @@
 [![Build Status](https://travis-ci.org/veltman/flubber.svg?branch=master)](https://travis-ci.org/veltman/flubber)
 
-# flubber
+# FlubberX
 
 Some best-guess methods for smoothly interpolating between 2-D shapes.
+
+FlubberX is a TypeScript modernization of [veltman/flubber](https://github.com/veltman/flubber): same public morph API, ESM/CJS/types, and a browser IIFE build.
 
 ![Flubber in action](https://user-images.githubusercontent.com/2120446/27014160-e0ce7c04-4ea7-11e7-8da4-5dde839290eb.gif)
 
@@ -14,23 +16,23 @@ The goal of this library is to provide a best-guess interpolation for any two ar
 
 ### Installation
 
-In a browser (exposes the `flubber` global):
-
-```html
-<script src="https://unpkg.com/flubber@0.3.0"></script>
-```
-
-With NPM:
-
 ```sh
 npm install flubber
 ```
 
-And then import/require it:
+```ts
+import { interpolate } from "flubber";
+import interpolate from "flubber"; // default export is interpolate
+```
 
 ```js
-var flubber = require("flubber"); // Node classic
-import { interpolate } from "flubber" // ES6
+const { interpolate } = require("flubber");
+```
+
+Browser IIFE (exposes the `flubber` global):
+
+```html
+<script src="build/flubber.min.js"></script>
 ```
 
 ### How to use

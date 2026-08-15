@@ -1,16 +1,16 @@
 {
   "name": "flubber-edyt",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "A trimmed, modernized, animation-focused path morph interpolator for EDYT.",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",
-  "module": "./dist/index.mjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/index.mjs",
+      "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
   },
@@ -27,9 +27,11 @@
     "clean": "rm -rf dist",
     "build": "tsup",
     "test": "vitest run",
-    "pack:local": "npm pack"
+    "pack:local": "npm pack",
+    "prepare": "npm run build"
   },
   "dependencies": {
+    "earcut": "^2.2.4",
     "svg-path-properties": "^2.0.0",
     "svgpath": "^2.6.0"
   },

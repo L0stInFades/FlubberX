@@ -1,16 +1,41 @@
 {
-  "name": "flubber",
-  "version": "0.4.2",
-  "description": "Best-guess methods for smoothly interpolating and animating between shapes.",
-  "main": "build/flubber.min.js",
-  "browser": "build/flubber.min.js",
-  "scripts": {
-    "test": "babel-tape-runner 'test/**-test.js'",
-    "pretest": "rm -rf build && mkdir build && rollup --config rollup.config.js",
-    "build": "npm run pretest && uglifyjs -m -c -- build/flubber.js > build/flubber.min.js"
+  "name": "flubberx",
+  "version": "0.5.0",
+  "description": "FlubberX: a TypeScript modernization of Flubber for interpolating and animating between 2-D shapes.",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18"
   },
-  "module": "index",
-  "jsnext:main": "index",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.cjs"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "build",
+    "src",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "test": "npm run test:tape && npm run test:formal",
+    "test:tape": "tsx test/add-test.ts && tsx test/all-test.ts && tsx test/array-test.ts && tsx test/interpolate-test.ts && tsx test/multiple-test.ts && tsx test/normalize-test.ts && tsx test/order-test.ts && tsx test/rotate-test.ts && tsx test/svg-test.ts && tsx test/triangulate-test.ts",
+    "test:formal": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
+    "format": "biome format --write .",
+    "check": "biome check .",
+    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/veltman/flubber.git"
@@ -21,7 +46,9 @@
     "tween",
     "svg",
     "animation",
-    "triangulation"
+    "triangulation",
+    "typescript",
+    "sdk"
   ],
   "author": "Noah Veltman (@veltman)",
   "license": "MIT",
@@ -29,31 +56,27 @@
     "url": "https://github.com/veltman/flubber/issues"
   },
   "homepage": "https://github.com/veltman/flubber#readme",
-  "devDependencies": {
-    "babel-plugin-add-module-exports": "^0.2.1",
-    "babel-preset-env": "^1.4.0",
-    "babel-tape-runner": "^2.0.1",
-    "rollup": "^0.41.6",
-    "rollup-plugin-buble": "^0.15.0",
-    "rollup-plugin-commonjs": "^8.0.2",
-    "rollup-plugin-node-resolve": "^2.1.1",
-    "tape": "^4.6.3",
-    "uglify-js": "^2.8.20"
-  },
   "dependencies": {
     "d3-array": "^1.2.0",
     "d3-polygon": "^1.0.3",
-    "earcut": "^2.1.1",
+    "earcut": "^2.2.4",
     "svg-path-properties": "^0.2.1",
     "svgpath": "^2.2.1",
     "topojson-client": "^3.0.0"
   },
-  "babel": {
-    "presets": [
-      "env"
-    ],
-    "plugins": [
-      "add-module-exports"
-    ]
+  "devDependencies": {
+    "@biomejs/biome": "2.5.8",
+    "@types/d3-array": "^3.2.1",
+    "@types/d3-polygon": "^3.0.2",
+    "@types/earcut": "^3.0.0",
+    "@types/node": "^22.13.4",
+    "@types/tape": "^5.8.1",
+    "@types/topojson-client": "^3.1.5",
+    "fast-check": "^3.23.2",
+    "tape": "^5.9.0",
+    "tsup": "^8.5.1",
+    "tsx": "^4.19.3",
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
   }
 }
