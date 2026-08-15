@@ -57,7 +57,7 @@ describe("Formal Verification: Edge Cases & GitHub Issue Fixes", () => {
     const triangle = "M50,0L100,100L0,100Z";
     const interpolator = interpolate(square, triangle, { precision: 2 });
     const mid = interpolator(0.5) as string;
-    expect(mid).toMatch(/^M[0-9.]+,[0-9.]+L/);
+    expect(mid).toMatch(/^M-?[0-9.]+,-?[0-9.]+L/);
     // Ensure no 10+ digit floats
     expect(mid.split(/[MLZ,]/).every((token) => token.length < 10)).toBe(true);
   });

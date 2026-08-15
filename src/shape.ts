@@ -1,11 +1,7 @@
 import { polygonLength } from "d3-polygon";
 import { addPoints } from "./add.js";
-import {
-  distance,
-  interpolatePoints,
-  isFiniteNumber,
-  polygonCentroid,
-} from "./math.js";
+import { interpolateRingsRigid } from "./arap.js";
+import { distance, isFiniteNumber, polygonCentroid } from "./math.js";
 import normalizeRing from "./normalize.js";
 import type {
   InterpolateOptions,
@@ -95,7 +91,12 @@ function fromShape(
   }
 
   const fromRing = fromFn(toRing);
-  const interpolator = interpolatePoints(fromRing, toRing, string, precision);
+  const interpolator = interpolateRingsRigid(
+    fromRing,
+    toRing,
+    string,
+    precision,
+  );
 
   if (string) {
     return (t: number) => (t < 1e-4 ? original : interpolator(t));

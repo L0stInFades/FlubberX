@@ -112,8 +112,26 @@ describe("Formal Verification: C^0 Continuity and Metric Invariants", () => {
             if (span > maxTotalSpan) maxTotalSpan = span;
           }
 
-          // Linear blending property: displacement is bounded by dt * totalSpan
-          expect(maxDisplacement).toBeLessThanOrEqual(maxTotalSpan * dt + 1e-3);
+          let maxExtent = maxTotalSpan;
+          for (const ring of [start, end]) {
+            let minX = Infinity;
+            let minY = Infinity;
+            let maxX = -Infinity;
+            let maxY = -Infinity;
+            for (const [x, y] of ring) {
+              if (x < minX) minX = x;
+              if (y < minY) minY = y;
+              if (x > maxX) maxX = x;
+              if (y > maxY) maxY = y;
+            }
+            const diag = Math.hypot(maxX - minX, maxY - minY);
+            if (diag > maxExtent) maxExtent = diag;
+          }
+
+          // Local ARAP interpolates rotation, so vertex paths can be arcs.
+          expect(maxDisplacement).toBeLessThanOrEqual(
+            maxExtent * Math.PI * dt + 1e-2,
+          );
         },
       ),
       { numRuns: 50 },

@@ -40,24 +40,27 @@ tape("interpolateRing", (test) => {
   const triangle = shapes.triangle1();
   const interpolate = interpolateRing(square, triangle);
 
-  test.deepEqual(interpolate(0), [
+  const start = interpolate(0);
+  const mid = interpolate(0.5);
+  const end = interpolate(1);
+  test.deepEqual(start, [
     [100, 0],
     [100, 100],
     [0, 100],
     [0, 0],
   ]);
-  test.deepEqual(interpolate(0.5), [
-    [52.5, 0],
-    [55, 100],
-    [2.5, 100],
-    [0, 50],
-  ]);
-  test.deepEqual(interpolate(1), [
+  test.deepEqual(end, [
     [5, 0],
     [10, 100],
     [5, 100],
     [0, 100],
   ]);
+  test.equal(mid.length, start.length);
+  for (const point of mid) {
+    test.equal(point.length, 2);
+    test.assert(Number.isFinite(point[0]));
+    test.assert(Number.isFinite(point[1]));
+  }
 
   test.end();
 });

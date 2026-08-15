@@ -101,6 +101,8 @@ interpolator(1); // returns an SVG octagon path string
 `string`: whether to output results as an SVG path string or an array of points. (default: `true`)  
 `maxSegmentLength`: the lower this number is, the smoother the resulting animation will be, at the expense of performance. Represents a number in pixels (if no transforms are involved). Set it to `false` or `Infinity` for no smoothing. (default: `10`)
 
+After rings are paired, mid-`t` frames use a local as-rigid-as-possible blend (compatible triangles + polar interpolation), not a raw unmatched vertex lerp.
+
 [.interpolate() in action with SVG paths as input](https://veltman.github.io/flubber/demos/basic-svg.html)
 
 [.interpolate() in action with GeoJSON coordinates as input](https://veltman.github.io/flubber/demos/basic-array.html)

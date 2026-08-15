@@ -1,5 +1,5 @@
 import { addPoints } from "./add.js";
-import { interpolatePoints } from "./math.js";
+import { interpolateRingsRigid } from "./arap.js";
 import normalizeRing from "./normalize.js";
 import rotate from "./rotate.js";
 import type {
@@ -99,5 +99,5 @@ export function interpolateRing(
 
   rotate(fromRing, toRing);
 
-  return interpolatePoints(fromRing, toRing, string, precision);
+  return interpolateRingsRigid(fromRing, toRing, string, precision);
 }
