@@ -1,7 +1,0 @@
-junk/
-test/
-demos/
-build/flubber.js
-rollup.config.js
-.gitignore
-.travis.yml

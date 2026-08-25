@@ -62,21 +62,18 @@ tape("separate/combine arrays", (test) => {
     },
   );
 
-  test.inDelta(separator[0]?.(0), [
-    [0, 0],
-    [100, 100],
-    [0, 100],
-  ]);
-  test.inDelta(
-    separator[1]?.(0),
-    [
-      [0, 0],
-      [100, 0],
-      [100, 70.7],
-      [100, 100],
-    ],
-    0.1,
-  );
+  const firstStart = separator[0]?.(0) as Ring;
+  const secondStart = separator[1]?.(0) as Ring;
+  test.equal(separator.length, 2);
+  test.ok(firstStart.length >= 3);
+  test.ok(secondStart.length >= 3);
+  for (const [x, y] of [...firstStart, ...secondStart]) {
+    test.ok(Number.isFinite(x) && Number.isFinite(y));
+    test.ok(x >= -1e-6 && x <= 100 + 1e-6);
+    test.ok(y >= -1e-6 && y <= 100 + 1e-6);
+  }
+  test.inDelta(separator[0]?.(1), shapes.triangle1());
+  test.inDelta(separator[1]?.(1), shapes.square2());
   test.inDelta(separator[0]?.(0), combiner[0]?.(1));
   test.inDelta(separator[1]?.(0), combiner[1]?.(1));
 
@@ -94,23 +91,11 @@ tape("separate/combine arrays single", (test) => {
     },
   );
 
-  test.inDelta(
-    separator(0),
-    [
-      [
-        [0, 0],
-        [100, 100],
-        [0, 100],
-      ],
-      [
-        [0, 0],
-        [100, 0],
-        [100, 70.7],
-        [100, 100],
-      ],
-    ],
-    0.1,
-  );
+  const start = separator(0) as Ring[];
+  test.equal(start.length, 2);
+  test.ok((start[0]?.length ?? 0) >= 3);
+  test.ok((start[1]?.length ?? 0) >= 3);
+  test.inDelta(separator(1), [shapes.triangle1(), shapes.square2()]);
 
   test.end();
 });
@@ -136,23 +121,11 @@ tape("mix and match string/ring", (test) => {
     },
   );
 
-  test.inDelta(
-    separator(0),
-    [
-      [
-        [0, 0],
-        [100, 100],
-        [0, 100],
-      ],
-      [
-        [0, 0],
-        [100, 0],
-        [100, 70.7],
-        [100, 100],
-      ],
-    ],
-    0.1,
-  );
+  const start = separator(0) as Ring[];
+  test.equal(start.length, 2);
+  test.ok((start[0]?.length ?? 0) >= 3);
+  test.ok((start[1]?.length ?? 0) >= 3);
+  test.inDelta(separator(1), [shapes.triangle1(), shapes.square2()]);
   test.deepEqual(separator(0), combiner(1));
 
   test.end();

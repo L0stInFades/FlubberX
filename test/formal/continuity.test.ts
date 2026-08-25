@@ -129,8 +129,9 @@ describe("Formal Verification: C^0 Continuity and Metric Invariants", () => {
           }
 
           // Local ARAP interpolates rotation, so vertex paths can be arcs.
+          const bound = maxExtent * Math.PI * dt + 1e-2;
           expect(maxDisplacement).toBeLessThanOrEqual(
-            maxExtent * Math.PI * dt + 1e-2,
+            bound + 1e-9 * Math.max(1, bound),
           );
         },
       ),

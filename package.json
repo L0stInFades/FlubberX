@@ -7,8 +7,10 @@
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
   "sideEffects": false,
+  "packageManager": "pnpm@11.23.0",
   "engines": {
-    "node": ">=18"
+    "node": ">=22",
+    "pnpm": ">=11"
   },
   "exports": {
     ".": {
@@ -26,15 +28,15 @@
     "LICENSE"
   ],
   "scripts": {
-    "build": "tsup",
-    "test": "npm run test:tape && npm run test:formal",
+    "build": "rm -rf dist build && tsup && tsc --emitDeclarationOnly --declaration --declarationMap",
+    "test": "pnpm run test:tape && pnpm run test:formal",
     "test:tape": "tsx test/add-test.ts && tsx test/all-test.ts && tsx test/array-test.ts && tsx test/interpolate-test.ts && tsx test/multiple-test.ts && tsx test/normalize-test.ts && tsx test/order-test.ts && tsx test/rotate-test.ts && tsx test/svg-test.ts && tsx test/triangulate-test.ts",
     "test:formal": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit && tsc --noEmit -p tsconfig.test.json",
     "format": "biome format --write .",
     "check": "biome check .",
-    "prepublishOnly": "npm run typecheck && npm run test && npm run build"
+    "prepublishOnly": "pnpm run typecheck && pnpm run build && pnpm run test"
   },
   "repository": {
     "type": "git",
@@ -56,27 +58,30 @@
     "url": "https://github.com/L0stInFades/FlubberX/issues"
   },
   "homepage": "https://github.com/L0stInFades/FlubberX#readme",
+  "publishConfig": {
+    "access": "public"
+  },
   "dependencies": {
-    "d3-array": "^1.2.0",
-    "d3-polygon": "^1.0.3",
-    "earcut": "^2.2.4",
-    "svg-path-properties": "^0.2.1",
-    "svgpath": "^2.2.1",
-    "topojson-client": "^3.0.0"
+    "d3-array": "latest",
+    "d3-polygon": "latest",
+    "earcut": "latest",
+    "svg-path-properties": "latest",
+    "svgpath": "latest",
+    "topojson-client": "latest"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.8",
-    "@types/d3-array": "^3.2.1",
-    "@types/d3-polygon": "^3.0.2",
-    "@types/earcut": "^3.0.0",
-    "@types/node": "^22.13.4",
-    "@types/tape": "^5.8.1",
-    "@types/topojson-client": "^3.1.5",
-    "fast-check": "^3.23.2",
-    "tape": "^5.9.0",
-    "tsup": "^8.5.1",
-    "tsx": "^4.19.3",
-    "typescript": "^5.7.3",
-    "vitest": "^3.0.5"
+    "@biomejs/biome": "latest",
+    "@types/d3-array": "latest",
+    "@types/d3-polygon": "latest",
+    "@types/earcut": "latest",
+    "@types/node": "latest",
+    "@types/tape": "latest",
+    "@types/topojson-client": "latest",
+    "fast-check": "latest",
+    "tape": "latest",
+    "tsup": "latest",
+    "tsx": "latest",
+    "typescript": "latest",
+    "vitest": "latest"
   }
 }

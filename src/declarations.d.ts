@@ -22,7 +22,8 @@ declare module "svgpath" {
 }
 
 declare module "svg-path-properties" {
-  export function svgPathProperties(path: string): {
+  export class svgPathProperties {
+    constructor(path: string);
     getTotalLength(): number;
     getPointAtLength(pos: number): { x: number; y: number };
     getTangentAtLength(pos: number): { x: number; y: number };
@@ -33,7 +34,5 @@ declare module "svg-path-properties" {
       tangentY: number;
     };
     getParts(): any[];
-  };
-
-  export default svgPathProperties;
+  }
 }

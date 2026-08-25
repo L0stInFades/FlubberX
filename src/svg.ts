@@ -9,36 +9,35 @@ const svgPathFactory: (path: string) => any =
   (SvgPath as unknown as { default?: (p: string) => any }).default ??
   (SvgPath as unknown as (p: string) => any);
 
-// Robust interop for svg-path-properties (resolves Issue #108 / PR #112)
-type SvgPathPropertiesFn = (path: string) => {
+type PathMeasure = {
   getTotalLength(): number;
   getPointAtLength(length: number): { x: number; y: number } | [number, number];
 };
 
-const getSvgPathProperties: SvgPathPropertiesFn = (() => {
+type SvgPathPropertiesCtor = new (path: string) => PathMeasure;
+
+const SvgPathProperties: SvgPathPropertiesCtor = (() => {
   const mod = SvgPathPropertiesModule as unknown as {
-    svgPathProperties?: SvgPathPropertiesFn;
-    default?: SvgPathPropertiesFn | { svgPathProperties?: SvgPathPropertiesFn };
+    svgPathProperties?: SvgPathPropertiesCtor;
+    default?:
+      | SvgPathPropertiesCtor
+      | { svgPathProperties?: SvgPathPropertiesCtor };
   };
 
-  if (typeof mod.svgPathProperties === "function") {
-    return mod.svgPathProperties;
+  const candidate =
+    mod.svgPathProperties ??
+    (typeof mod.default === "function" ? mod.default : undefined) ??
+    (mod.default && typeof mod.default === "object"
+      ? mod.default.svgPathProperties
+      : undefined) ??
+    (typeof SvgPathPropertiesModule === "function"
+      ? (SvgPathPropertiesModule as unknown as SvgPathPropertiesCtor)
+      : undefined);
+
+  if (typeof candidate !== "function") {
+    throw new Error("Unable to resolve svg-path-properties module");
   }
-  if (typeof mod.default === "function") {
-    return mod.default;
-  }
-  if (
-    mod.default &&
-    typeof (mod.default as { svgPathProperties?: SvgPathPropertiesFn })
-      .svgPathProperties === "function"
-  ) {
-    return (mod.default as { svgPathProperties: SvgPathPropertiesFn })
-      .svgPathProperties;
-  }
-  if (typeof SvgPathPropertiesModule === "function") {
-    return SvgPathPropertiesModule as unknown as SvgPathPropertiesFn;
-  }
-  throw new Error("Unable to resolve svg-path-properties module");
+  return candidate;
 })();
 
 function parse(str: string): any {
@@ -214,6 +213,5 @@ function measure(d: string): {
     }
   }
 
-  // Fall back to svg-path-properties
-  return getSvgPathProperties(d);
+  return new SvgPathProperties(d);
 }

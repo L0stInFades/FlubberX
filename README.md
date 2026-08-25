@@ -1,10 +1,11 @@
-[![Build Status](https://travis-ci.org/veltman/flubber.svg?branch=master)](https://travis-ci.org/veltman/flubber)
+[![CI](https://github.com/L0stInFades/FlubberX/actions/workflows/ci.yml/badge.svg)](https://github.com/L0stInFades/FlubberX/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE)
 
 # FlubberX
 
 Some best-guess methods for smoothly interpolating between 2-D shapes.
 
-FlubberX is a TypeScript modernization of [veltman/flubber](https://github.com/veltman/flubber): same public morph API, ESM/CJS/types, and a browser IIFE build.
+FlubberX is a TypeScript modernization of [veltman/flubber](https://github.com/veltman/flubber): the original public morph API, plus ESM/CJS/types, a browser IIFE build, extra interpolator options, and a local as-rigid-as-possible mid-`t` blend.
 
 ![Flubber in action](https://user-images.githubusercontent.com/2120446/27014160-e0ce7c04-4ea7-11e7-8da4-5dde839290eb.gif)
 
@@ -16,17 +17,23 @@ The goal of this library is to provide a best-guess interpolation for any two ar
 
 ### Installation
 
+Requires Node.js 22 or newer.
+
 ```sh
-npm install flubber
+pnpm add flubberx
+```
+
+```sh
+npm install flubberx
 ```
 
 ```ts
-import { interpolate } from "flubber";
-import interpolate from "flubber"; // default export is interpolate
+import { interpolate } from "flubberx";
+import interpolate from "flubberx"; // default export is interpolate
 ```
 
 ```js
-const { interpolate } = require("flubber");
+const { interpolate } = require("flubberx");
 ```
 
 Browser IIFE (exposes the `flubber` global):
@@ -99,7 +106,11 @@ interpolator(1); // returns an SVG octagon path string
 `options` can include the following keys:
 
 `string`: whether to output results as an SVG path string or an array of points. (default: `true`)  
-`maxSegmentLength`: the lower this number is, the smoother the resulting animation will be, at the expense of performance. Represents a number in pixels (if no transforms are involved). Set it to `false` or `Infinity` for no smoothing. (default: `10`)
+`maxSegmentLength`: the lower this number is, the smoother the resulting animation will be, at the expense of performance. Represents a number in pixels (if no transforms are involved). Set it to `false` or `Infinity` for no smoothing. (default: `10`)  
+`optimizeEndpoints`: return the original path strings when `t` is very close to 0 or 1. (default: `true`)  
+`endpointEpsilon`: threshold for that endpoint snap. (default: `1e-4`)  
+`clamp`: clamp `t` into `[0, 1]`. (default: `false`)  
+`precision`: decimal places for generated path strings, or `null` for full precision. (default: `null`)
 
 After rings are paired, mid-`t` frames use a local as-rigid-as-possible blend (compatible triangles + polar interpolation), not a raw unmatched vertex lerp.
 
@@ -266,16 +277,8 @@ Many thanks to:
 * Vladimir Agafonkin and Mapbox for [earcut](https://github.com/mapbox/earcut)
 * Roger Veciana Rovira for [svg-path-properties](https://github.com/rveciana/svg-path-properties)
 * Fontello for [svgpath](https://github.com/fontello/svgpath)
-* Rich Harris for [Rollup](https://github.com/rollup/rollup) and [Bublé](http://buble.surge.sh/)
+* [Noah Veltman](https://github.com/veltman) for the original Flubber algorithm and API
 
 ### License
 
-MIT License
-
-Copyright (c) 2017 Noah Veltman
-
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+MIT. See [LICENSE](./LICENSE). Original Flubber is © 2017 Noah Veltman; FlubberX retains that notice and adds the TypeScript modernization under the same license.

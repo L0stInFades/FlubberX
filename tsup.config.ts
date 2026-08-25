@@ -1,23 +1,42 @@
 import { defineConfig } from "tsup";
 
+const runtimeDeps = [
+  "d3-array",
+  "d3-polygon",
+  "earcut",
+  "svg-path-properties",
+  "svgpath",
+  "topojson-client",
+];
+
 export default defineConfig([
-  // Primary SDK Build: ESM and CommonJS
   {
     entry: ["src/index.ts"],
-    format: ["esm", "cjs"],
-    dts: true,
+    format: ["esm"],
+    dts: false,
     sourcemap: true,
-    clean: true,
+    clean: false,
     outDir: "dist",
-    outExtension({ format }) {
-      return {
-        js: format === "esm" ? ".mjs" : ".cjs",
-      };
+    outExtension() {
+      return { js: ".mjs" };
     },
     splitting: false,
     treeshake: true,
   },
-  // Standalone IIFE / UMD browser bundle for legacy backwards compatibility (build/flubber.min.js & build/flubber.js)
+  {
+    entry: ["src/index.ts"],
+    format: ["cjs"],
+    dts: false,
+    sourcemap: true,
+    clean: false,
+    outDir: "dist",
+    noExternal: runtimeDeps,
+    outExtension() {
+      return { js: ".cjs" };
+    },
+    splitting: false,
+    treeshake: true,
+  },
   {
     entry: { flubber: "src/index.ts" },
     format: ["iife"],
@@ -25,14 +44,7 @@ export default defineConfig([
     outDir: "build",
     minify: false,
     sourcemap: true,
-    noExternal: [
-      "d3-array",
-      "d3-polygon",
-      "earcut",
-      "svg-path-properties",
-      "svgpath",
-      "topojson-client",
-    ],
+    noExternal: runtimeDeps,
     outExtension() {
       return { js: ".js" };
     },
@@ -44,14 +56,7 @@ export default defineConfig([
     outDir: "build",
     minify: true,
     sourcemap: true,
-    noExternal: [
-      "d3-array",
-      "d3-polygon",
-      "earcut",
-      "svg-path-properties",
-      "svgpath",
-      "topojson-client",
-    ],
+    noExternal: runtimeDeps,
     outExtension() {
       return { js: ".js" };
     },
